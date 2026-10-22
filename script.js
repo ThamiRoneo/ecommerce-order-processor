@@ -588,6 +588,18 @@ function setActiveNav(hash) {
 window.addEventListener('hashchange', () => setActiveNav(location.hash || '#statistics'));
 setActiveNav(location.hash || '#statistics');
 
+// Back to top button
+const backToTop = document.getElementById('back-to-top');
+if (backToTop) {
+    window.addEventListener('scroll', () => {
+        backToTop.classList.toggle('hidden', window.scrollY < 200);
+        backToTop.classList.toggle('flex', window.scrollY >= 200);
+    });
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
 // Challenge 9: Statistics Dashboard (Map, Set, RegExp, Date, Array)
 function categoryCounts() {
     const counts = new Map();
