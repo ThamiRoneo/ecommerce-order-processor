@@ -2,96 +2,96 @@
 let orders = [
   {
     orderId: 1,
-    customerName: 'John Doe',
+    customerName: 'John  Doe',
     email: 'john.doe@gmail.com',
     product: 'Laptop',
     category: 'Electronics',
     price: 999.99,
-    orderDate: '2023-10-01'
+    orderDate: '2023-08-15'
   },
   {
     orderId: 2,
-    customerName: 'Jane Smith',
+    customerName: 'jANE sMITH',
     email: 'jane.smith@gmail.com',
-    product: 'Smartphone',
-    category: 'Electronics',
-    price: 699.99,
-    orderDate: '2023-10-02'
+    product: 'Running Shoes',
+    category: 'Sports',
+    price: 89.5,
+    orderDate: '2023-09-02'
   },
   {
     orderId: 3,
     customerName: 'Bob Johnson',
     email: 'bob.johnson@gmail.com',
-    product: 'Headphones',
-    category: 'Electronics',
-    price: 199.99,
+    product: 'Cookware Set',
+    category: 'Home & Kitchen',
+    price: 149.99,
     orderDate: '2023-10-03'
   },
   {
     orderId: 4,
-    customerName: 'Alice Williams',
-    email: 'alice.williams@gmail.com',
-    product: 'Tablet',
-    category: 'Electronics',
-    price: 499.99,
-    orderDate: '2023-10-04'
+    customerName: '  Alice Williams  ',
+    email: 'alice.williams(at)gmail.com',
+    product: 'Denim Jacket',
+    category: 'Clothing',
+    price: 74.95,
+    orderDate: '2023-11-14'
   },
   {
     orderId: 5,
-    customerName: 'Michael Brown',
+    customerName: 'MICHAEL BROWN',
     email: 'michael.brown@icloud.com',
-    product: 'Smartphone',
-    category: 'Electronics',
-    price: 699.99,
-    orderDate: '2023-10-05'
+    product: 'Cookbook',
+    category: 'Books',
+    price: 32.5,
+    orderDate: '2023-12-24'
   },
   {
     orderId: 6,
     customerName: 'Thato Mokoena',
     email: 'thato.mokoena@gmail.com',
-    product: 'Smartwatch',
+    product: 'Wireless Headphones',
     category: 'Electronics',
-    price: 299.99,
-    orderDate: '2023-10-06'
+    price: 219.99,
+    orderDate: '2024-01-05'
   },
   {
     orderId: 7,
     customerName: "Sipho Dlamini",
-    email: 'sipho.dlamini@outlook.com',
-    product: "Bluetooth Speaker",
-    category: "Electronics",
-    price: 149.99,
-    orderDate: '2023-10-07'
+    email: 'sipho.dlamini',
+    product: 'Board Game',
+    category: 'Toys & Games',
+    price: 45.99,
+    orderDate: '2024-02-18'
   },
   {
     orderId: 8,
-    customerName: 'Lerato Khumalo',
+    customerName: 'Lerato khumalo',
     email: 'lerato.khumalo@gmail.com',
-    product: 'Wireless Earbuds',
-    category: 'Electronics',
-    price: 129.99,
-    orderDate: '2023-10-08'
+    product: 'Yoga Mat',
+    category: 'Sports',
+    price: 29.9,
+    orderDate: '2024-03-30'
   },
   {
     orderId: 9,
     customerName: "Thabo Mthembu",
     email: 'thabomthembu.@yahoo.com',
-    product: 'Gaming Console',
-    category: 'Electronics',
-    price: 12499.99,
-    orderDate: '2023-10-09'
+    product: 'Espresso Machine',
+    category: 'Home & Kitchen',
+    price: 1249.5,
+    orderDate: '2024-04-11'
   },
   {
     orderId: 10,
     customerName: "Zanele Ndlovu",
     email: 'zee007@outlook.com',
-    product: 'Digital Camera',
-    category: 'Electronics',
-    price: 10899.99,
-    orderDate: '2023-10-10'
+    product: 'Office Chair',
+    category: 'Furniture',
+    price: 1089.99,
+    orderDate: '2024-05-22'
   },
 ]
-
+// task 5 - Challenge 0
 let orderSection = document.getElementById('order-section');
 
 const currency = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
