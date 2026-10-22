@@ -1,5 +1,7 @@
 # E-Commerce Order Processor
 
+**[Live demo](https://ecommerce-order-processor.vercel.app)**
+
 ## Project Description
 
 A client-side e-commerce order dashboard for viewing and processing orders. It displays order details, calculates revenue/statistics, cleans customer data, sorts by date, shows unique categories, supports JSON export/import, and validates customer emails and order ids with regular expressions. The Statistics section summarises the whole dataset: order count, revenue, average, highest/lowest order, VAT, unique categories, orders per category, valid/invalid emails, most expensive product and recent orders. Every statistic recalculates whenever the dataset changes (for example after a JSON import).
