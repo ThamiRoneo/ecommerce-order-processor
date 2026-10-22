@@ -75,5 +75,7 @@ A client-side e-commerce order dashboard for viewing and processing orders. It d
 
 4. **If you had more time, what would you improve about the application?**  
    
-
+   **Persistence.** I would save the orders to `localStorage` so a refresh does not throw them away. The moment that made it obvious was importing a set of orders, watching the table and the statistics update, and then refreshing the page and getting the ten seeded orders back with no warning at all. It outranks the other improvements I had in mind (statistics that follow the active filters, sorting on more columns) because everything in this app is a view over one array — the table, the statistics, the categories, the product catalog — so if that array is gone on refresh, the features are just as gone with it.
+   
+   The part I had to think through is that `localStorage` only stores strings, so the orders have to go through `JSON.stringify()` and `JSON.parse()` — the same pair Challenge 7 used for export and import. And because `orders` is a variable in memory, it cannot just be written on import: it has to be rehydrated on page load, before anything renders, or the first paint would show the old data and then jump to the saved one. I would also deliberately *not* persist the filters or the sort direction. Those are view state rather than data, and a fresh page should open on the full dataset — persisting them would mean opening the app and finding one order on screen because of a filter I left on three days ago.
    
