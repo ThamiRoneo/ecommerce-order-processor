@@ -235,6 +235,13 @@ function isRecentOrder(order) {
     return daysSince(order) <= 30;
 }
 
+function sortedOrders() {
+    return [...orders].sort((a, b) => {
+        const diff = orderDateObject(b).getTime() - orderDateObject(a).getTime();
+        return sortNewestFirst ? diff : -diff;
+    });
+}
+
 // Challenge 4: Search, Filter and Analyse Orders (Array Methods)
 function categoryOptions() {
     return [...new Set(orders.map((order) => order.category))].sort();
@@ -296,8 +303,6 @@ const categoryFilter = document.getElementById('category-filter');
 const minPriceInput = document.getElementById('min-price');
 const maxPriceInput = document.getElementById('max-price');
 
-categoryFilter.innerHTML = '<option value="">All categories</option>' + categoryOptions().map((category) => `<option value="${category}">${category}</option>`).join('');
-
 function applyFilters() {
     renderOrders();
     renderFilterPanel();
@@ -354,17 +359,9 @@ function renderCategories() {
 }
 
 function renderCategoryFilter() {
-    const categories = getUniqueCategories();
-    const container = document.querySelector('#search-filter div[aria-label="Search and filter"]');
-    if (!container) return;
-    container.innerHTML = `
-        <div class="p-4">
-            <label for="categoryFilter" class="block text-xs font-medium text-slate-600 mb-2">Category</label>
-            <select id="categoryFilter" class="w-full border border-slate-200 px-3 py-2 text-sm">
-                <option value="all">All</option>
-                ${categories.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
-            </select>
-        </div>`;
+    const select = document.getElementById('category-filter');
+    if (!select) return;
+    select.innerHTML = '<option value="">All categories</option>' + categoryOptions().map((category) => `<option value="${category}">${category}</option>`).join('');
 }
 
 renderCategories();
@@ -375,3 +372,56 @@ orderSection.addEventListener('click', (event) => {
     sortNewestFirst = !sortNewestFirst;
     renderOrders();
 });
+
+// Challenge 6: Product Lookup (Map)
+const productMap = new Map();
+const productInput = document.getElementById('product-input');
+
+function buildProductMap() {
+    productMap.clear();
+    orders.forEach((order) => {
+        productMap.set(order.product, { price: order.price, category: order.category });
+    });
+    document.getElementById('product-options').innerHTML = [...productMap.keys()].map((name) => `<option value="${name}"></option>`).join('');
+    document.getElementById('catalog-size').textContent = `${productMap.size} products in catalog`;
+}
+
+function findProduct(name) {
+    const query = name.trim();
+    if (!query) return undefined;
+    if (productMap.has(query)) return { name: query, ...productMap.get(query) };
+    for (const key of productMap.keys()) {
+        if (key.toLowerCase() === query.toLowerCase()) return { name: key, ...productMap.get(key) };
+    }
+    return undefined;
+}
+
+function renderProductLookup() {
+    const query = productInput.value.trim();
+    const result = document.getElementById('product-result');
+    const missing = document.getElementById('product-missing');
+
+    if (!query) {
+        result.innerHTML = '';
+        missing.classList.add('hidden');
+        return;
+    }
+
+    const product = findProduct(query);
+    if (!product) {
+        result.innerHTML = '';
+        missing.textContent = `No product named "${query}". The catalog holds ${productMap.size} products.`;
+        missing.classList.remove('hidden');
+        return;
+    }
+
+    missing.classList.add('hidden');
+    result.innerHTML = `
+        <p class="text-sm font-medium text-slate-900">${product.name}</p>
+        <p class="text-xs text-slate-500">${product.category}</p>
+        <p class="mt-1 text-sm font-medium text-slate-900">${formatMoney(product.price)}</p>
+        <p class="text-xs text-slate-500">VAT ${formatMoney(orderVat(product.price))} · total ${formatMoney(orderTotal(product.price))}</p>`;
+}
+
+buildProductMap();
+productInput.addEventListener('input', renderProductLookup);
