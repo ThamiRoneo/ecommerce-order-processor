@@ -111,18 +111,41 @@ orderSection.innerHTML = `
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                ${orders.map((order) => `
-                <tr class="hover:bg-slate-50">
+                ${orders.map((order) => {
+                    const name = cleanName(order.customerName);
+                    const email = cleanEmail(order.email);
+                    return `
+                <tr class="hover:bg-slate-50" title="First name: ${firstName(order.customerName)} | Email domain: ${emailDomain(order.email) || 'none'}">
                     <td class="px-4 py-3 font-medium text-slate-900">#${order.orderId}</td>
                     <td class="px-4 py-3">
-                        <span class="block font-medium text-slate-900">${order.customerName}</span>
-                        <span class="block text-xs text-slate-500">${order.email}</span>
+                        <span class="block font-medium text-slate-900">${name}</span>
+                        <span class="block text-xs text-slate-500">${email}</span>
                     </td>
                     <td class="px-4 py-3 text-slate-700">${order.product}</td>
                     <td class="px-4 py-3 text-slate-500">${order.category}</td>
                     <td class="px-4 py-3 text-right font-medium text-slate-900">${currency.format(order.price)}</td>
                     <td class="px-4 py-3 text-slate-500">${orderDate(order.orderDate)}</td>
-                </tr>`).join('')}
+                </tr>`;
+                }).join('')}
             </tbody>
         </table>
     </div>`;
+
+// Challenge 1: Clean Customer Data (String)
+function cleanName(name) {
+    return name.trim().split(/\s+/).map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+}
+
+function cleanEmail(email) {
+    return email.trim().replace(/\s+/g, '').toLowerCase();
+}
+
+function firstName(name) {
+    return cleanName(name).split(' ')[0];
+}
+
+function emailDomain(email) {
+    const cleaned = cleanEmail(email);
+    return cleaned.includes('@') ? cleaned.split('@')[1] : '';
+}
+
