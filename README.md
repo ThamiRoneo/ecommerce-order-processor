@@ -57,6 +57,9 @@ A client-side e-commerce order dashboard for viewing and processing orders. It d
 
 1. **Which built-in JavaScript object did you find most useful?**  
    
+   **`Array` — mostly `map()` and `filter()`.** The order data lives in one array, and nearly every feature in the app is a read-only pass over that array rather than a change to it. `map()` turned each order into a table row in `renderOrders()`, each order into its category for the unique-category list (`[...new Set(orders.map((order) => order.category))].sort()`), and each `[category, count]` pair into a row in the statistics section. `filter()` narrowed the dataset for the search and filter panel (`scopedOrders()` and `visibleOrders()`), and it is how the statistics count valid emails and recent orders.
+   
+   The thing I had to be careful with was sorting. `sort()` mutates the array it is called on, so sorting the orders by date would have re-ordered the original list every time I clicked the date header — sorting a copy (`[...orders].sort(...)`) avoids that. It also made the difference between the three obvious: `map()` and `filter()` always hand back a new array, while `sort()` changes the one you gave it.
 
 2. **Which challenge was the most difficult?**  
    
