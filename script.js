@@ -566,6 +566,28 @@ validationPattern.addEventListener('change', () => {
 renderPatternSource();
 renderValidationSummary();
 
+// Navigation active tab
+function setActiveNav(hash) {
+    const id = hash.replace('#', '');
+    document.querySelectorAll('.nav-link').forEach((link) => {
+        const isActive = link.getAttribute('href') === '#' + id;
+        link.classList.toggle('border-emerald-800', isActive);
+        link.classList.toggle('bg-emerald-50', isActive);
+        link.classList.toggle('font-medium', isActive);
+        link.classList.toggle('text-emerald-950', isActive);
+        link.classList.toggle('border-transparent', !isActive);
+        link.classList.toggle('text-slate-600', !isActive);
+        if (isActive) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
+        }
+    });
+}
+
+window.addEventListener('hashchange', () => setActiveNav(location.hash || '#statistics'));
+setActiveNav(location.hash || '#statistics');
+
 // Challenge 9: Statistics Dashboard (Map, Set, RegExp, Date, Array)
 function categoryCounts() {
     const counts = new Map();
