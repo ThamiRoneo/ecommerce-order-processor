@@ -218,6 +218,24 @@ function updateStats() {
     document.getElementById('stat-highest').textContent = formatMoney(highestOrderPrice());
     document.getElementById('stat-lowest').textContent = formatMoney(lowestOrderPrice());
     document.getElementById('stat-vat').textContent = formatMoney(totalVat());
+
+    document.getElementById('stat-unique-categories').textContent = getUniqueCategories().length;
+
+    const emails = emailValidityCounts();
+    document.getElementById('stat-email-validity').textContent = `${emails.valid} valid · ${emails.invalid} invalid`;
+
+    const priciest = mostExpensiveProduct();
+    document.getElementById('stat-most-expensive').textContent = priciest ? priciest.product : '—';
+    document.getElementById('stat-most-expensive-price').textContent = priciest ? formatMoney(priciest.price) : '';
+
+    document.getElementById('stat-recent-orders').textContent = recentOrderCount();
+
+    document.getElementById('stat-category-counts').innerHTML = [...categoryCounts()]
+        .map(([category, count]) => `
+            <li class="flex items-baseline justify-between gap-3 border-b border-slate-100 py-1">
+                <span class="truncate text-sm text-slate-600">${escapeHtml(category)}</span>
+                <span class="text-sm font-semibold text-slate-900">${count}</span>
+            </li>`).join('');
 }
 
 function renderDataProcessing() {
@@ -268,6 +286,7 @@ document.querySelector('#data-processing').addEventListener('click', (e) => {
             buildProductMap();
             renderValidationSummary();
             renderDataProcessing(); // refresh export
+            selftest();
         } catch (ex) {
             err.textContent = 'Invalid JSON or format.';
         }
@@ -546,3 +565,37 @@ validationPattern.addEventListener('change', () => {
 
 renderPatternSource();
 renderValidationSummary();
+
+// Challenge 9: Statistics Dashboard (Map, Set, RegExp, Date, Array)
+function categoryCounts() {
+    const counts = new Map();
+    orders.forEach((order) => counts.set(order.category, (counts.get(order.category) || 0) + 1));
+    return counts;
+}
+
+function emailValidityCounts() {
+    const valid = orders.filter((order) => isValidEmail(cleanEmail(order.email))).length;
+    return { valid, invalid: orders.length - valid };
+}
+
+function mostExpensiveProduct() {
+    return orders.reduce((best, order) => (!best || order.price > best.price ? order : best), undefined);
+}
+
+function recentOrderCount() {
+    return orders.filter((order) => isRecentOrder(order)).length;
+}
+
+function selftest() {
+    const check = (label, actual, expected) => console.assert(actual === expected, `${label}: expected ${expected}, got ${actual}`);
+    const counts = categoryCounts();
+    check('category counts total', [...counts.values()].reduce((sum, count) => sum + count, 0), orders.length);
+    check('unique categories', getUniqueCategories().length, counts.size);
+    const emails = emailValidityCounts();
+    check('email counts total', emails.valid + emails.invalid, orders.length);
+    check('highest >= lowest', highestOrderPrice() >= lowestOrderPrice(), true);
+    if (orders.length) check('priciest product is highest order', mostExpensiveProduct()?.price, highestOrderPrice());
+    check('recent orders within total', recentOrderCount() <= orders.length, true);
+}
+
+selftest();
