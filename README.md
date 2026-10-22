@@ -32,26 +32,7 @@ A client-side e-commerce order dashboard for viewing and processing orders. It d
 
 ## Screenshots
 
-### Orders Displayed
-![Orders table showing order list with cleaned customer names, products, categories, prices with VAT/total, and dates](./screenshots/orders-displayed.png)
-
-### Searching/Filtering
-![Category dropdown in Search/Filter populated from unique categories](./screenshots/search-filtering.png)
-
-### Calculated Statistics
-![Statistics cards showing total orders, revenue, average order value, highest order, lowest order, and total VAT](./screenshots/calculated-statistics.png)
-
-### Unique Categories
-![Categories section listing unique product categories](./screenshots/unique-categories.png)
-
-### Product Lookup
-(To be added)
-
-### Date Processing
-![Order rows showing readable dates, days ago, and Recent badge for orders within 30 days; sortable by date](./screenshots/date-processing.png)
-
-### JSON Processing and Validation
-![Data Processing section showing exported JSON and import textarea with error handling](./screenshots/json-processing-validation.png)
+Screenshots will be added upon full completion.
 
 ## Reflection
 
