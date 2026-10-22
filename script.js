@@ -152,6 +152,7 @@ function renderOrders() {
 }
 
 renderOrders();
+updateStats();
 
 // Challenge 1: Clean Customer Data (String)
 function cleanName(name) {
@@ -205,12 +206,69 @@ function lowestOrderPrice() {
     return Math.min(...orders.map((order) => order.price));
 }
 
-document.getElementById('stat-orders').textContent = orders.length;
-document.getElementById('stat-revenue').textContent = formatMoney(totalRevenue());
-document.getElementById('stat-average').textContent = formatMoney(averageOrderPrice());
-document.getElementById('stat-highest').textContent = formatMoney(highestOrderPrice());
-document.getElementById('stat-lowest').textContent = formatMoney(lowestOrderPrice());
-document.getElementById('stat-vat').textContent = formatMoney(totalVat());
+// Challenge 7: Export and Import Orders (JSON)
+
+function updateStats() {
+    document.getElementById('stat-orders').textContent = orders.length;
+    document.getElementById('stat-revenue').textContent = formatMoney(totalRevenue());
+    document.getElementById('stat-average').textContent = formatMoney(averageOrderPrice());
+    document.getElementById('stat-highest').textContent = formatMoney(highestOrderPrice());
+    document.getElementById('stat-lowest').textContent = formatMoney(lowestOrderPrice());
+    document.getElementById('stat-vat').textContent = formatMoney(totalVat());
+}
+
+function renderDataProcessing() {
+    const container = document.querySelector('#data-processing div[aria-label="Data processing"]');
+    if (!container) return;
+    container.innerHTML = `
+        <div class="p-4 space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-2">Export Orders (JSON)</label>
+                <textarea id="exportJson" readonly class="w-full border border-slate-200 px-3 py-2 text-xs font-mono h-24">${escapeHtml(JSON.stringify(orders, null, 2))}</textarea>
+                <button id="copyExport" class="mt-2 text-xs px-2 py-1 border border-slate-200 hover:bg-slate-50">Copy</button>
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-2">Import Orders (JSON)</label>
+                <textarea id="importJson" class="w-full border border-slate-200 px-3 py-2 text-xs font-mono h-24" placeholder='[{"orderId":11,...}]'></textarea>
+                <button id="importBtn" class="mt-2 text-xs px-2 py-1 border border-slate-200 hover:bg-slate-50">Import</button>
+                <p id="importError" class="text-xs text-red-600 mt-1"></p>
+            </div>
+        </div>`;
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+renderDataProcessing();
+
+document.querySelector('#data-processing').addEventListener('click', (e) => {
+    if (e.target.id === 'copyExport') {
+        const ta = document.getElementById('exportJson');
+        ta.select();
+        document.execCommand('copy'); // ponytail: simple copy, add Clipboard API if need more
+    }
+    if (e.target.id === 'importBtn') {
+        const ta = document.getElementById('importJson');
+        const err = document.getElementById('importError');
+        err.textContent = '';
+        try {
+            const parsed = JSON.parse(ta.value);
+            if (!Array.isArray(parsed)) throw new Error('Not an array');
+            // ponytail: assume shape matches; add validation if needed
+            orders = orders.concat(parsed);
+            renderOrders();
+            updateStats();
+            renderCategories();
+            renderCategoryFilter();
+            renderFilterPanel();
+            buildProductMap();
+            renderDataProcessing(); // refresh export
+        } catch (ex) {
+            err.textContent = 'Invalid JSON or format.';
+        }
+    }
+});
 
 // Challenge 3: Order Dates (Date)
 function orderDateObject(order) {
