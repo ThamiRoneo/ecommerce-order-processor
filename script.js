@@ -79,7 +79,7 @@ let orders = [
     product: 'Espresso Machine',
     category: 'Home & Kitchen',
     price: 1249.5,
-    orderDate: '2024-04-11'
+    orderDate: '2026-10-05'
   },
   {
     orderId: 10,
@@ -88,16 +88,17 @@ let orders = [
     product: 'Office Chair',
     category: 'Furniture',
     price: 1089.99,
-    orderDate: '2024-05-22'
+    orderDate: '2026-10-19'
   },
 ]
 // task 5 - Challenge 0
 let orderSection = document.getElementById('order-section');
+let sortNewestFirst = true;
 
 const currency = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
-const orderDate = (iso) => new Date(`${iso}T00:00:00`).toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' });
 
-orderSection.innerHTML = `
+function renderOrders() {
+    orderSection.innerHTML = `
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
             <thead>
@@ -107,11 +108,15 @@ orderSection.innerHTML = `
                     <th scope="col" class="px-4 py-3 font-semibold">Product</th>
                     <th scope="col" class="px-4 py-3 font-semibold">Category</th>
                     <th scope="col" class="px-4 py-3 text-right font-semibold">Price</th>
-                    <th scope="col" class="px-4 py-3 font-semibold">Date</th>
+                    <th scope="col" class="px-4 py-3 font-semibold" aria-sort="${sortNewestFirst ? 'descending' : 'ascending'}">
+                        <button type="button" data-sort="date" class="inline-flex items-center gap-1 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">
+                            Date <span aria-hidden="true">${sortNewestFirst ? '↓' : '↑'}</span>
+                        </button>
+                    </th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                ${orders.map((order) => {
+                ${sortedOrders().map((order) => {
                     const name = cleanName(order.customerName);
                     const email = cleanEmail(order.email);
                     return `
@@ -123,13 +128,23 @@ orderSection.innerHTML = `
                     </td>
                     <td class="px-4 py-3 text-slate-700">${order.product}</td>
                     <td class="px-4 py-3 text-slate-500">${order.category}</td>
-                    <td class="px-4 py-3 text-right font-medium text-slate-900">${currency.format(order.price)}</td>
-                    <td class="px-4 py-3 text-slate-500">${orderDate(order.orderDate)}</td>
+                    <td class="px-4 py-3 text-right">
+                        <span class="block font-medium text-slate-900">${formatMoney(order.price)}</span>
+                        <span class="block text-xs text-slate-500">VAT ${formatMoney(orderVat(order.price))} · total ${formatMoney(orderTotal(order.price))}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="block font-medium text-slate-900">${readableDate(order)}</span>
+                        <span class="block text-xs text-slate-500">${daysAgoText(order)}</span>
+                        ${isRecentOrder(order) ? '<span class="mt-1 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800">Recent</span>' : ''}
+                    </td>
                 </tr>`;
                 }).join('')}
             </tbody>
         </table>
     </div>`;
+}
+
+renderOrders();
 
 // Challenge 1: Clean Customer Data (String)
 function cleanName(name) {
@@ -149,3 +164,81 @@ function emailDomain(email) {
     return cleaned.includes('@') ? cleaned.split('@')[1] : '';
 }
 
+// Challenge 2: Order Math (Number and Math)
+function formatMoney(value) {
+    return currency.format(value.toFixed(2));
+}
+
+function orderVat(price) {
+    const cents = Math.round(price * 100);
+    return Math.round((cents * 15) / 100) / 100;
+}
+
+function orderTotal(price) {
+    return price + orderVat(price);
+}
+
+function totalRevenue() {
+    return orders.reduce((sum, order) => sum + parseFloat(order.price), 0);
+}
+
+function totalVat() {
+    return orders.reduce((sum, order) => sum + orderVat(order.price), 0);
+}
+
+function averageOrderPrice() {
+    return Math.round((totalRevenue() / orders.length) * 100) / 100;
+}
+
+function highestOrderPrice() {
+    return Math.max(...orders.map((order) => order.price));
+}
+
+function lowestOrderPrice() {
+    return Math.min(...orders.map((order) => order.price));
+}
+
+document.getElementById('stat-orders').textContent = orders.length;
+document.getElementById('stat-revenue').textContent = formatMoney(totalRevenue());
+document.getElementById('stat-average').textContent = formatMoney(averageOrderPrice());
+document.getElementById('stat-highest').textContent = formatMoney(highestOrderPrice());
+document.getElementById('stat-lowest').textContent = formatMoney(lowestOrderPrice());
+document.getElementById('stat-vat').textContent = formatMoney(totalVat());
+
+// Challenge 3: Order Dates (Date)
+function orderDateObject(order) {
+    return new Date(`${order.orderDate}T00:00:00`);
+}
+
+function readableDate(order) {
+    const date = orderDateObject(order);
+    return date.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function daysSince(order) {
+    return Math.floor((Date.now() - orderDateObject(order).getTime()) / 86400000);
+}
+
+function daysAgoText(order) {
+    const days = daysSince(order);
+    return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
+function isRecentOrder(order) {
+    return daysSince(order) <= 30;
+}
+
+function sortedOrders() {
+    return [...orders].sort((a, b) => {
+        const diff = orderDateObject(b).getTime() - orderDateObject(a).getTime();
+        return sortNewestFirst ? diff : -diff;
+    });
+}
+
+orderSection.addEventListener('click', (event) => {
+    if (!event.target.closest('[data-sort="date"]')) return;
+    sortNewestFirst = !sortNewestFirst;
+    renderOrders();
+});
+
+// Challenge 3 - Work With Order Dates (Date)

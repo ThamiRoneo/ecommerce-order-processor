@@ -49,11 +49,31 @@
                         <h2 id="statistics-heading" class="text-sm font-semibold text-slate-900">Statistics</h2>
                         <span class="text-xs text-slate-500">Store Overview</span>
                     </div>
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        <div class="min-h-24 border border-slate-200 bg-white p-4" aria-label="Orders statistic"></div>
-                        <div class="min-h-24 border border-slate-200 bg-white p-4" aria-label="Revenue statistic"></div>
-                        <div class="min-h-24 border border-slate-200 bg-white p-4" aria-label="Revenue statistic"></div>
-                        <div class="min-h-24 border border-slate-200 bg-white p-4" aria-label="Revenue statistic"></div>
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        <div class="min-h-24 border border-slate-200 bg-white p-4">
+                            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Orders</p>
+                            <p id="stat-orders" class="mt-2 text-xl font-semibold tracking-tight text-slate-950">0</p>
+                        </div>
+                        <div class="min-h-24 border border-slate-200 bg-white p-4">
+                            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total Revenue</p>
+                            <p id="stat-revenue" class="mt-2 text-xl font-semibold tracking-tight text-slate-950">0</p>
+                        </div>
+                        <div class="min-h-24 border border-slate-200 bg-white p-4">
+                            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Average Order Value</p>
+                            <p id="stat-average" class="mt-2 text-xl font-semibold tracking-tight text-slate-950">0</p>
+                        </div>
+                        <div class="min-h-24 border border-slate-200 bg-white p-4">
+                            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Highest Order</p>
+                            <p id="stat-highest" class="mt-2 text-xl font-semibold tracking-tight text-slate-950">0</p>
+                        </div>
+                        <div class="min-h-24 border border-slate-200 bg-white p-4">
+                            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Lowest Order</p>
+                            <p id="stat-lowest" class="mt-2 text-xl font-semibold tracking-tight text-slate-950">0</p>
+                        </div>
+                        <div class="min-h-24 border border-slate-200 bg-white p-4">
+                            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total VAT (15%)</p>
+                            <p id="stat-vat" class="mt-2 text-xl font-semibold tracking-tight text-slate-950">0</p>
+                        </div>
                     </div>
                 </section>
 
