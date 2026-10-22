@@ -337,3 +337,41 @@ document.getElementById('clear-filters').addEventListener('click', () => {
 
 renderFilterPanel();
 
+// Challenge 5: Unique Categories (Set)
+
+function getUniqueCategories() {
+    return [...new Set(orders.map(order => order.category))];
+}
+
+function renderCategories() {
+    const categories = getUniqueCategories();
+    const container = document.querySelector('#categories div[aria-label="Categories"]');
+    if (!container) return;
+    container.innerHTML = `
+        <ul class="divide-y divide-slate-100">
+            ${categories.map(cat => `<li class="px-4 py-2 text-sm text-slate-700">${cat}</li>`).join('')}
+        </ul>`;
+}
+
+function renderCategoryFilter() {
+    const categories = getUniqueCategories();
+    const container = document.querySelector('#search-filter div[aria-label="Search and filter"]');
+    if (!container) return;
+    container.innerHTML = `
+        <div class="p-4">
+            <label for="categoryFilter" class="block text-xs font-medium text-slate-600 mb-2">Category</label>
+            <select id="categoryFilter" class="w-full border border-slate-200 px-3 py-2 text-sm">
+                <option value="all">All</option>
+                ${categories.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
+            </select>
+        </div>`;
+}
+
+renderCategories();
+renderCategoryFilter();
+
+orderSection.addEventListener('click', (event) => {
+    if (!event.target.closest('[data-sort="date"]')) return;
+    sortNewestFirst = !sortNewestFirst;
+    renderOrders();
+});
