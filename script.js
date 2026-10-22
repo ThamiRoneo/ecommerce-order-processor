@@ -94,10 +94,15 @@ let orders = [
 // task 5 - Challenge 0
 let orderSection = document.getElementById('order-section');
 let sortNewestFirst = true;
+let searchTerm = '';
+let selectedCategory = '';
+let minPrice = null;
+let maxPrice = null;
 
 const currency = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
 
 function renderOrders() {
+    const visible = visibleOrders();
     orderSection.innerHTML = `
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
@@ -116,7 +121,9 @@ function renderOrders() {
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                ${sortedOrders().map((order) => {
+                ${visible.length === 0
+                    ? '<tr><td colspan="6" class="px-4 py-6 text-sm text-slate-500">No orders match the current filters.</td></tr>'
+                    : visible.map((order) => {
                     const name = cleanName(order.customerName);
                     const email = cleanEmail(order.email);
                     return `
@@ -228,17 +235,105 @@ function isRecentOrder(order) {
     return daysSince(order) <= 30;
 }
 
-function sortedOrders() {
-    return [...orders].sort((a, b) => {
-        const diff = orderDateObject(b).getTime() - orderDateObject(a).getTime();
-        return sortNewestFirst ? diff : -diff;
+// Challenge 4: Search, Filter and Analyse Orders (Array Methods)
+function categoryOptions() {
+    return [...new Set(orders.map((order) => order.category))].sort();
+}
+
+function scopedOrders() {
+    return sortedOrders().filter((order) => {
+        if (selectedCategory && order.category !== selectedCategory) return false;
+        if (minPrice !== null && order.price < minPrice) return false;
+        if (maxPrice !== null && order.price > maxPrice) return false;
+        return true;
     });
 }
 
-orderSection.addEventListener('click', (event) => {
-    if (!event.target.closest('[data-sort="date"]')) return;
-    sortNewestFirst = !sortNewestFirst;
+function matchesTerm(order, query) {
+    return String(order.orderId) === query || cleanName(order.customerName).toLowerCase().includes(query);
+}
+
+function visibleOrders() {
+    const query = searchTerm.trim().toLowerCase();
+    return scopedOrders().filter((order) => !query || matchesTerm(order, query));
+}
+
+function findOrder(term) {
+    const query = term.trim().toLowerCase();
+    return query ? scopedOrders().find((order) => matchesTerm(order, query)) : undefined;
+}
+
+function totalOf(list) {
+    return list.reduce((sum, order) => sum + order.price, 0);
+}
+
+function renderFilterPanel() {
+    const visible = visibleOrders();
+    const found = findOrder(searchTerm);
+    const products = visible.map((order) => ({ product: order.product, total: orderTotal(order.price) }));
+
+    document.getElementById('filter-summary').innerHTML = `
+        <p class="text-sm font-medium text-slate-900">${visible.length} of ${orders.length} orders</p>
+        <p>Total ${formatMoney(totalOf(visible))}</p>
+        <p>Any order over R 1 000: ${visible.some((order) => order.price > 1000) ? 'Yes' : 'No'}</p>
+        <p>All prices valid: ${visible.every((order) => Number.isFinite(order.price) && order.price > 0) ? 'Yes' : 'No'}</p>`;
+
+    document.getElementById('search-result').innerHTML = found
+        ? `<p class="text-xs font-medium uppercase tracking-wider text-slate-500">Found</p>
+           <p class="mt-1 text-sm font-medium text-slate-900">#${found.orderId} - ${cleanName(found.customerName)}</p>
+           <p class="text-xs text-slate-500">${found.product} - ${formatMoney(orderTotal(found.price))} incl. VAT</p>`
+        : searchTerm.trim() ? '<p class="text-sm text-slate-500">No order found.</p>' : '';
+
+    document.getElementById('product-list').innerHTML = `
+        <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Products incl. VAT</p>
+        <ul class="mt-1 space-y-0.5">
+            ${products.map((item) => `<li class="flex justify-between gap-3"><span class="truncate text-slate-600">${item.product}</span><span class="shrink-0 font-medium text-slate-900">${formatMoney(item.total)}</span></li>`).join('')}
+        </ul>`;
+}
+
+const searchInput = document.getElementById('search-input');
+const categoryFilter = document.getElementById('category-filter');
+const minPriceInput = document.getElementById('min-price');
+const maxPriceInput = document.getElementById('max-price');
+
+categoryFilter.innerHTML = '<option value="">All categories</option>' + categoryOptions().map((category) => `<option value="${category}">${category}</option>`).join('');
+
+function applyFilters() {
     renderOrders();
+    renderFilterPanel();
+}
+
+searchInput.addEventListener('input', () => {
+    searchTerm = searchInput.value;
+    applyFilters();
 });
 
-// Challenge 3 - Work With Order Dates (Date)
+categoryFilter.addEventListener('change', () => {
+    selectedCategory = categoryFilter.value;
+    applyFilters();
+});
+
+minPriceInput.addEventListener('input', () => {
+    minPrice = minPriceInput.value === '' ? null : Number(minPriceInput.value);
+    applyFilters();
+});
+
+maxPriceInput.addEventListener('input', () => {
+    maxPrice = maxPriceInput.value === '' ? null : Number(maxPriceInput.value);
+    applyFilters();
+});
+
+document.getElementById('clear-filters').addEventListener('click', () => {
+    searchInput.value = '';
+    categoryFilter.value = '';
+    minPriceInput.value = '';
+    maxPriceInput.value = '';
+    searchTerm = '';
+    selectedCategory = '';
+    minPrice = null;
+    maxPrice = null;
+    applyFilters();
+});
+
+renderFilterPanel();
+
