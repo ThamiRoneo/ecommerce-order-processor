@@ -9,19 +9,19 @@
 </head>
 <body  class="min-h-screen bg-[#f6f7f8] text-slate-800 antialiased">
     <div class="min-h-screen lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
-        <aside class="border-b border-slate-200 bg-white px-5 py-5 lg:min-h-screen lg:border-b-0 lg:border-r ;g:px-4 lg:py-7">
+        <aside class="border-b border-slate-200 bg-white px-5 py-5 lg:min-h-screen lg:border-b-0 lg:border-r lg:px-4 lg:py-7">
             <a href="#main-content" class="flex w-fit items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400">
-                <span class="grid size-9 place-items-center bg-emrald-800 text-sm font-semibold text-blue" aria-hidden="true">E</span>
+                <span class="grid size-9 place-items-center bg-emerald-800 text-sm font-semibold text-white" aria-hidden="true">E</span>
                 <span>
                     <span class="block text-sm font-semibold tracking-wide text-slate-900">EVERYDAY</span>
                     <span class="block text-xs text-slate-500">Commerce operations</span>
                 </span>
             </a>
 
-            <nav class="mt-12" aria-label="Main navigation">
+            <nav class="mt-12 overflow-x-auto" aria-label="Main navigation">
                 <p class="mb-3 hidden px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 lg:block">Workspace</p>
                 <ul class="flex min-w-max gap-1 pb-1 lg:min-w-0 lg:flex-col lg:px-0 lg:pb-0">
-                	<li><a href="#orders" aria-current="page" class="block border-b-2 border-emerald-800 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-950 lg:border-b-0 lg:border-1-2 lg:py-2.5">Orders</a></li>
+                	<li><a href="#orders" aria-current="page" class="block border-b-2 border-emerald-800 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-950 lg:border-b-0 lg:border-l-2 lg:py-2.5">Orders</a></li>
                 	<li><a href="#search-filter" class="block border-b-2 border-transparent px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-emerald-700 lg:border-b-0 lg:border-l-2 lg:py-2.5">Search / Filter</a></li>
                 	<li><a href="#statistics" class="block border-b-2 border-transparent px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-emerald-700 lg:border-b-0 lg:border-l-2 lg:py-2.5">Statistics</a></li>
                 	<li><a href="#categories" class="block border-b-2 border-transparent px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-emerald-700 lg:border-b-0 lg:border-l-2 lg:py-2.5">Categories</a></li>
@@ -36,7 +36,7 @@
             </div>
         </aside>
 
-        <main class="main-content" class="min-w-0 px-5 py-7 sm:px-8 sm:py-9 lg:px-10 lg:py-10">
+        <main id="main-content" class="min-w-0 px-5 py-7 sm:px-8 sm:py-9 lg:px-10 lg:py-10">
             <header class="mb-8 border-b border-slate-200 pb-6">
                 <p class="mb-2 text-xs font-medium text-slate-500">Workspace <span class="px-1 text-slate-300">/</span> Overview</p>
                 <h1 class="text-2xl font-semibold tracking-tight text-slate-950 sm:text-[1.75rem]">Commerce Dashboard</h1>
@@ -57,12 +57,12 @@
                     </div>
                 </section>
 
-                <section id="orders" aria-labelledby="orders-heading" class="xl:col-span-8">
+                <section id="orders" aria-labelledby="orders-heading" class="min-w-0 xl:col-span-8">
                     <div class="mb-3 flex items-baseline justify-between">
                         <h2 id="orders-heading" class="text-sm font-semibold text-slate-900">Orders</h2>
                         <span class="text-xs text-slate-500">Order management</span>
                     </div>
-                    <div class="min-h-64 border border-slate-200 bg-white" aria-label="Orders"></div>
+                    <div id="order-section" class="min-h-64 border border-slate-200 bg-white" aria-label="Orders"></div>
                 </section>
 
                 <section id="search-filter" aria-labelledby="search-filter-heading" class="xl:col-span-4">
