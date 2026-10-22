@@ -100,6 +100,8 @@ let minPrice = null;
 let maxPrice = null;
 
 const currency = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
+const EMAIL_PATTERN = /^[A-Za-z0-9_%+-]+(?:\.[A-Za-z0-9_%+-]+)*@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+const ORDER_ID_PATTERN = /^[1-9]\d*$/;
 
 function renderOrders() {
     const visible = visibleOrders();
@@ -132,6 +134,7 @@ function renderOrders() {
                     <td class="px-4 py-3">
                         <span class="block font-medium text-slate-900">${name}</span>
                         <span class="block text-xs text-slate-500">${email}</span>
+                        ${validationBadge(order)}
                     </td>
                     <td class="px-4 py-3 text-slate-700">${order.product}</td>
                     <td class="px-4 py-3 text-slate-500">${order.category}</td>
@@ -263,6 +266,7 @@ document.querySelector('#data-processing').addEventListener('click', (e) => {
             renderCategoryFilter();
             renderFilterPanel();
             buildProductMap();
+            renderValidationSummary();
             renderDataProcessing(); // refresh export
         } catch (ex) {
             err.textContent = 'Invalid JSON or format.';
@@ -483,3 +487,62 @@ function renderProductLookup() {
 
 buildProductMap();
 productInput.addEventListener('input', renderProductLookup);
+
+// Challenge 8: Validate With Patterns (RegExp)
+function isValidEmail(email) {
+    return EMAIL_PATTERN.test(email);
+}
+
+function isValidOrderId(orderId) {
+    return ORDER_ID_PATTERN.test(String(orderId));
+}
+
+function validationIssues(order) {
+    const issues = [];
+    if (!isValidEmail(cleanEmail(order.email))) issues.push('email');
+    if (!isValidOrderId(order.orderId)) issues.push('order id');
+    return issues;
+}
+
+function validationBadge(order) {
+    const issues = validationIssues(order);
+    return issues.length
+        ? `<span class="mt-1 inline-flex rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-medium text-red-700">Invalid ${issues.join(' + ')}</span>`
+        : `<span class="mt-1 inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800">Valid</span>`;
+}
+
+function renderValidationSummary() {
+    const invalid = orders.filter((order) => validationIssues(order).length > 0).length;
+    document.getElementById('validation-summary').textContent = `${invalid} of ${orders.length} orders fail validation`;
+}
+
+const validationPattern = document.getElementById('validation-pattern');
+const validationInput = document.getElementById('validation-input');
+const validationSource = document.getElementById('validation-pattern-source');
+
+function renderPatternSource() {
+    validationSource.textContent = validationPattern.value === 'email' ? EMAIL_PATTERN.source : ORDER_ID_PATTERN.source;
+}
+
+function testValue() {
+    const value = validationInput.value.trim();
+    const output = document.getElementById('validation-output');
+    if (!value) {
+        output.textContent = '';
+        return;
+    }
+    const emailPattern = validationPattern.value === 'email';
+    const valid = emailPattern ? isValidEmail(value) : isValidOrderId(value);
+    const label = emailPattern ? 'email address' : 'order id';
+    output.textContent = valid ? `Valid ${label}` : `Not a valid ${label}`;
+    output.className = valid ? 'mt-2 text-sm font-medium text-emerald-700' : 'mt-2 text-sm font-medium text-red-600';
+}
+
+validationInput.addEventListener('input', testValue);
+validationPattern.addEventListener('change', () => {
+    renderPatternSource();
+    testValue();
+});
+
+renderPatternSource();
+renderValidationSummary();

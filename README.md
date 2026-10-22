@@ -2,7 +2,7 @@
 
 ## Project Description
 
-A client-side e-commerce order dashboard for viewing and processing orders. It displays order details, calculates revenue/statistics, cleans customer data, sorts by date, shows unique categories, and supports JSON export/import.
+A client-side e-commerce order dashboard for viewing and processing orders. It displays order details, calculates revenue/statistics, cleans customer data, sorts by date, shows unique categories, supports JSON export/import, and validates customer emails and order ids with regular expressions.
 
 ## Technologies
 
@@ -20,9 +20,9 @@ A client-side e-commerce order dashboard for viewing and processing orders. It d
 | `Date` | `orderDateObject()` (`new Date()`), `readableDate()` (`toLocaleDateString()`), `daysSince()` (`Date.now()`), sorting by date |
 | `Array` | Order data structure, `map()`, `reduce()`, `sort()`, spread `[...orders]`, concatenation on import |
 | `Set` | `getUniqueCategories()` to build unique categories from orders |
-| `Map` | (Not yet implemented) |
+| `Map` | Product lookup catalog (`buildProductMap()`, `findProduct()`) |
 | `JSON` | `JSON.stringify()` in export, `JSON.parse()` in import with try/catch |
-| `RegExp` | Whitespace normalization in `cleanName()` (`/\s+/`) and `cleanEmail()` (`/\s+/g`) |
+| `RegExp` | Whitespace normalization in `cleanName()` (`/\s+/`) and `cleanEmail()` (`/\s+/g`); validation patterns (`EMAIL_PATTERN`, `ORDER_ID_PATTERN`) with `.test()` in Challenge 8 |
 | `Intl` | `Intl.NumberFormat` for ZAR currency formatting |
 
 ## How to Run
@@ -48,12 +48,4 @@ Screenshots will be added upon full completion.
 4. **If you had more time, what would you improve about the application?**  
    
 
-
-2. **Which challenge was the most difficult?**  
-   
-
-3. **What did you learn about choosing the right JavaScript method for a problem?**  
-   
-
-4. **If you had more time, what would you improve about the application?**  
    
